@@ -34,7 +34,7 @@ Plug 'stevearc/oil.nvim' -- file explorer
 
 call('plug#end')
 require('plugins_lua') -- plugin settings in lua
-cmd('source lua/plugins_vim.vim') -- plugin settings in vimscript
+cmd('source $HOME/.config/nvim/lua/plugins_vim.vim') -- plugin settings in vimscript
 --------------------------------------------------------------------------------
 -- END PLUGINS -----------------------------------------------------------------
 
