@@ -9,7 +9,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Install NVIDIA packages
-pacman -Sy --noconfirm nvidia nvidia-utils lib32-nvidia-utils nvidia-settings
+pacman -Sy --noconfirm nvidia nvidia-utils nvidia-settings
 
 # Configure kernel parameters for both GRUB and systemd-boot
 configure_bootloader() {
