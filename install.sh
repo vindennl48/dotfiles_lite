@@ -33,7 +33,7 @@ if [ -d "$HOME/.config/nvim" ]; then
     echo "    Skipping"
   fi
 fi
-cp -a "nvim" "$HOME/.config"
+cp -a "nvim" "$HOME/.config/nvim"
 echo "    Done"
 
 echo "--> Adding Tmux"
