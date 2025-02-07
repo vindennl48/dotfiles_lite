@@ -2,7 +2,12 @@
 
 echo "--> Installing Dotfiles Lite.."
 
-echo "    Would you like to continue? [y/n]"
+echo "    For this to work you need to install the following:"
+echo "    neovim gcc xclip tmux"
+echo "    As well as zsh and changing the shell: chsh \$(which zsh)"
+echo "    "
+
+echo "--> Would you like to continue? [y/n]"
 read -r response
 if [ "$response" != "y" ]; then
   exit 0
