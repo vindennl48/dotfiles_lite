@@ -38,6 +38,7 @@ if [ -d "$HOME/.config/nvim" ]; then
     echo "    Skipping"
   fi
 fi
+mkdir -p "$HOME/.config"
 cp -a "nvim" "$HOME/.config/nvim"
 echo "    Done"
 
