@@ -6,6 +6,11 @@ echo "    For this to work you need to install the following:"
 echo "    neovim gcc xclip tmux"
 echo "    As well as zsh and changing the shell: chsh \$(which zsh)"
 echo "    "
+echo "    For Arch and Pyenv.. Make sure you install Make and run the pyenv"
+echo "    installer."
+echo "    \$ sudo pacman -Syu make"
+echo "    \$ curl -fsSL https://pyenv.run | bash"
+echo "    "
 
 echo "--> Would you like to continue? [y/n]"
 read -r response
