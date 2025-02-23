@@ -3,7 +3,7 @@
 echo "--> Installing Dotfiles Lite.."
 
 echo "    For this to work you need to install the following:"
-echo "    neovim gcc xclip tmux"
+echo "    neovim gcc nodejs yarn xclip tmux"
 echo "    As well as zsh and changing the shell: chsh \$(which zsh)"
 echo "    "
 echo "    For Arch and Pyenv.. Make sure you install Make and run the pyenv"
@@ -18,62 +18,57 @@ if [ "$response" != "y" ]; then
   exit 0
 fi
 
-echo "--> Adding Zsh"
-if [ -d "$HOME/.zshrc" ]; then
-  echo "    Found an existing .zshrc file.."
-  echo "    Do you want to move .zshrc to .zshrc.bak? [y/n]"
-  read -r response
-  if [ "$response" = "y" ]; then
-    mv "$HOME/.zshrc" "$HOME/.zshrc.bak"
-  else
-    echo "    Skipping"
+link_dotfile() {
+  local repo_path="${dotfilesDir}/$1"
+  local home_path="${homeDir}/$2"
+  
+  # Skip if symlink is already correct
+  if [ -L "$home_path" ] && [ "$(readlink "$home_path")" = "$repo_path" ]; then
+    echo "✓ Symlink '$home_path' already correct"
+    return 0
   fi
-fi
-cp "zsh/zshrc" "$HOME/.zshrc"
-echo "    Done"
 
-echo "--> Adding Neovim"
-if [ -d "$HOME/.config/nvim" ]; then
-  echo "    Found an existing .config/nvim directory.."
-  echo "    Do you want to move .config/nvim to .config/nvim.bak? [y/n]"
-  read -r response
-  if [ "$response" = "y" ]; then
-    mv "$HOME/.config/nvim" "$HOME/.config/nvim.bak"
-  else
-    echo "    Skipping"
+  # Backup existing file/directory if not a symlink
+  if [ -e "$home_path" ] && [ ! -L "$home_path" ]; then
+    local backup_base="$home_path.bak"
+    local backup_path="$backup_base"
+    local timestamp=$(date +%Y%m%d%H%M%S)
+    
+    # Append timestamp if backup exists
+    [ -e "$backup_base" ] && backup_path="$backup_base.$timestamp"
+    
+    echo "⚠ Backing up '$home_path' to '$backup_path'"
+    mv -- "$home_path" "$backup_path"
   fi
-fi
-mkdir -p "$HOME/.config"
-cp -a "nvim" "$HOME/.config/nvim"
-echo "    Done"
 
-echo "--> Adding Tmux"
-if [ -d "$HOME/.tmux.conf" ]; then
-  echo "    Found an existing .tmux.conf file.."
-  echo "    Do you want to move .tmux.conf to .tmux.conf.bak? [y/n]"
-  read -r response
-  if [ "$response" = "y" ]; then
-    mv "$HOME/.tmux.conf" "$HOME/.tmux.conf.bak"
-  else
-    echo "    Skipping"
-  fi
-fi
-cp "tmux/tmux.conf" "$HOME/.tmux.conf"
-echo "    Done"
+  # Create parent directories if needed
+  mkdir -p "$(dirname "$home_path")"
 
-echo "--> Adding Git Settings"
-if [ -d "$HOME/.gitconfig" ]; then
-  echo "    Found an existing .gitconfig file.."
-  echo "    Do you want to move .gitconfig to .gitconfig.bak? [y/n]"
-  read -r response
-  if [ "$response" = "y" ]; then
-    mv "$HOME/.gitconfig" "$HOME/.gitconfig.bak"
-  else
-    echo "    Skipping"
-  fi
-fi
-cp "git/gitconfig" "$HOME/.gitconfig"
-echo "    Done"
+  # Create/update symlink
+  echo "➔ Creating symlink: '$home_path' → '$repo_path'"
+  ln -sfn "$repo_path" "$home_path"
+
+  # Make sure to set correct user permissions
+  echo "➔ Setting Permission: $(dirname "$home_path")"
+  chown ${username}:users "$(dirname "$home_path")"
+
+  echo "➔ Setting Permission: $home_path"
+  chown -h ${username}:users "$home_path"
+}
+
+# Dotfile mappings (repo_path:home_path)
+declare -A dotfiles=(
+  ['zsh/zshrc']='.zshrc'
+  ['git/gitconfig']='.gitconfig'
+  ['nvim']='.config/nvim'
+  ['tmux']='.config/tmux'
+  # Add more mappings here
+)
+
+# Process all dotfiles
+for repo_path in "''${!dotfiles[@]}"; do
+  link_dotfile "$repo_path" "''${dotfiles[''$repo_path]}"
+done
 
 echo "--> Finished installing Dotfiles Lite!"
 
