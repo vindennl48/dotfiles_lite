@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Define essential variables
+dotfilesDir="$(cd "$(dirname "$0")" && pwd)"
+homeDir="$HOME"
+username="$(id -un)"
+
 echo "--> Installing Dotfiles Lite.."
 
 echo "    For this to work you need to install the following:"
@@ -48,12 +53,12 @@ link_dotfile() {
   echo "➔ Creating symlink: '$home_path' → '$repo_path'"
   ln -sfn "$repo_path" "$home_path"
 
-  # Make sure to set correct user permissions
+  # Set correct user permissions
   echo "➔ Setting Permission: $(dirname "$home_path")"
-  chown ${username}:users "$(dirname "$home_path")"
+  sudo chown "${username}:users" "$(dirname "$home_path")"
 
   echo "➔ Setting Permission: $home_path"
-  chown -h ${username}:users "$home_path"
+  sudo chown -h "${username}:users" "$home_path"
 }
 
 # Dotfile mappings (repo_path:home_path)
@@ -66,9 +71,8 @@ declare -A dotfiles=(
 )
 
 # Process all dotfiles
-for repo_path in "''${!dotfiles[@]}"; do
-  link_dotfile "$repo_path" "''${dotfiles[''$repo_path]}"
+for repo_path in "${!dotfiles[@]}"; do
+  link_dotfile "$repo_path" "${dotfiles[$repo_path]}"
 done
 
 echo "--> Finished installing Dotfiles Lite!"
-
