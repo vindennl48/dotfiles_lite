@@ -3,8 +3,8 @@
 echo "--> Installing Dotfiles Lite.."
 
 echo "    For this to work you need to install the following:"
-echo "    neovim gcc nodejs yarn xclip tmux"
-echo "    As well as zsh and changing the shell: chsh \$(which zsh)"
+echo "    neovim gcc nodejs yarn xclip tmux zsh"
+echo "    As well as changing the shell: chsh -s \$(which zsh)"
 echo "    "
 echo "    For Arch and Pyenv.. Make sure you install Make and run the pyenv"
 echo "    installer."
